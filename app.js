@@ -1,6 +1,7 @@
 require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
+const http = require('http')
 
 // Import database models
 const UserController = require('./controllers/userController')
@@ -11,9 +12,17 @@ const authentication = require('./midllewares/authentication')
 const errorHandler = require('./midllewares/errorHandler')
 const multerErrorHandler = require('./midllewares/multerErrorHandler')
 const upload = require('./config/multer')
+const SocketServer = require('./socket/socketServer')
 
 const app = express()
+const server = http.createServer(app)
 const port = process.env.PORT || 3000
+
+// Initialize Socket.io server
+const socketServer = new SocketServer(server)
+
+// Make socket server available to controllers
+app.set('socketServer', socketServer)
 
 // Middleware
 app.use(cors())
@@ -49,6 +58,7 @@ app.post("/rooms/:roomId/ai/response", AIController.generateResponse)
 // Error handling middleware
 app.use(errorHandler)
 
-app.listen(port, () => {
+server.listen(port, () => {
     console.log(`Chat-Cord app listening on http://localhost:${port}`)
+    console.log('Socket.io server initialized and ready for connections')
 })
