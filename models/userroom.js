@@ -12,11 +12,11 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
-  }
-  UserRoom.init({
+  } UserRoom.init({
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      field: 'userId',
       validate: {
         notNull: {
           msg: "User ID is required"
@@ -29,6 +29,7 @@ module.exports = (sequelize, DataTypes) => {
     roomId: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      field: 'roomId',
       validate: {
         notNull: {
           msg: "Room ID is required"
@@ -54,6 +55,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'UserRoom',
+    tableName: 'UserRooms',
+    underscored: false,
     indexes: [
       {
         unique: true,
