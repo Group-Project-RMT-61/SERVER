@@ -212,7 +212,56 @@ class SocketServer {
             console.log(`Message sent by ${socket.user.username} in room ${roomId}`);
         } catch (error) {
             console.error('Send message error:', error);
-            socket.emit('error', { message: 'Failed to send message' });
+            socket.emit('error', { message: 'Failed to send message' });        }
+    }
+
+    // Handle real-time image message sending
+    async handleSendImageMessage(socket, data) {
+        try {
+            const { roomId, imageUrl, filename } = data;
+
+            if (!imageUrl || !roomId) {
+                socket.emit('error', { message: 'Image URL and roomId are required' });
+                return;
+            }
+
+            // Verify room exists
+            const room = await Room.findByPk(roomId);
+            if (!room) {
+                socket.emit('error', { message: 'Room not found' });
+                return;
+            }
+
+            // Create image message in database
+            const message = await Message.create({
+                content: imageUrl,
+                userId: socket.userId,
+                roomId,
+                type: 'image',
+                isAI: false
+            });
+
+            // Get message with user data
+            const messageWithUser = await Message.findByPk(message.id, {
+                include: [
+                    {
+                        model: User,
+                        as: 'user',
+                        attributes: ['id', 'username', 'avatar']
+                    }
+                ]
+            });
+
+            // Broadcast to all users in the room
+            this.io.to(`room_${roomId}`).emit('new_message', {
+                message: messageWithUser,
+                timestamp: new Date()
+            });
+
+            console.log(`Image message sent by ${socket.user.username} in room ${roomId}`);
+        } catch (error) {
+            console.error('Send image message error:', error);
+            socket.emit('error', { message: 'Failed to send image message' });
         }
     }
 
