@@ -13,7 +13,12 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Room.hasMany(models.Message, { foreignKey: 'roomId', as: 'messages' });
       Room.belongsTo(models.User, { foreignKey: 'createdBy', as: 'creator' });
-      Room.belongsToMany(models.User, { through: models.UserRoom, as: 'members' });
+      Room.belongsToMany(models.User, {
+        through: models.UserRoom,
+        as: 'members',
+        foreignKey: 'roomId',
+        otherKey: 'userId'
+      });
     }
   }
   Room.init({
