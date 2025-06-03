@@ -5,8 +5,11 @@ const cors = require('cors')
 // Import database models
 const UserController = require('./controllers/userController')
 const RoomController = require('./controllers/roomController')
+const MessageController = require('./controllers/messageController')
 const authentication = require('./midllewares/authentication')
 const errorHandler = require('./midllewares/errorHandler')
+const multerErrorHandler = require('./midllewares/multerErrorHandler')
+const upload = require('./config/multer')
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -30,6 +33,11 @@ app.use(authentication)
 app.get("/rooms", RoomController.getRooms)
 app.post("/rooms/:id/join", RoomController.joinRoom)
 app.delete("/rooms/:id/leave", RoomController.leaveRoom)
+
+// Message routes (protected)
+app.get("/rooms/:roomId/messages", MessageController.getMessages)
+app.post("/rooms/:roomId/messages", MessageController.createMessage)
+app.post("/rooms/:roomId/messages/image", upload.single('image'), multerErrorHandler, MessageController.createImageMessage)
 
 // Error handling middleware
 app.use(errorHandler)
