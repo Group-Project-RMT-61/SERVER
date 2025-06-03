@@ -54,7 +54,9 @@ class UserController {
             })
 
             res.status(200).json({
-                access_token
+                access_token,
+                id: user.id,
+                status: user.status
             })
         } catch (error) {
             console.log(error)
