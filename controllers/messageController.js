@@ -66,6 +66,15 @@ class MessageController {
                 ]
             });
 
+            // Emit real-time message to all users in the room
+            const socketServer = req.app.get('socketServer');
+            if (socketServer) {
+                socketServer.io.to(`room_${roomId}`).emit('new_message', {
+                    message: messageWithUser,
+                    timestamp: new Date()
+                });
+            }
+
             res.status(201).json({
                 message: "Message sent successfully",
                 data: messageWithUser
@@ -127,6 +136,15 @@ class MessageController {
                     }
                 ]
             });
+
+            // Emit real-time image message to all users in the room
+            const socketServer = req.app.get('socketServer');
+            if (socketServer) {
+                socketServer.io.to(`room_${roomId}`).emit('new_message', {
+                    message: messageWithUser,
+                    timestamp: new Date()
+                });
+            }
 
             res.status(201).json({
                 message: "Image message sent successfully",

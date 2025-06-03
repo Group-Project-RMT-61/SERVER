@@ -64,6 +64,16 @@ class AIController {
                 ]
             });
 
+            // Emit real-time AI summary to all users in the room
+            const socketServer = req.app.get('socketServer');
+            if (socketServer) {
+                socketServer.io.to(`room_${roomId}`).emit('new_message', {
+                    message: summaryWithUser,
+                    timestamp: new Date(),
+                    isAI: true
+                });
+            }
+
             res.status(201).json({
                 message: `Summary generated successfully using ${summaryMethod === 'ai' ? 'AI' : 'fallback'} method`,
                 data: summaryWithUser,
@@ -221,6 +231,16 @@ class AIController {
                     }
                 ]
             });
+
+            // Emit real-time AI response to all users in the room
+            const socketServer = req.app.get('socketServer');
+            if (socketServer) {
+                socketServer.io.to(`room_${roomId}`).emit('new_message', {
+                    message: responseWithUser,
+                    timestamp: new Date(),
+                    isAI: true
+                });
+            }
 
             res.status(201).json({
                 message: "AI response generated successfully",
