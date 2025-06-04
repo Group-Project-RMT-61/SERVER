@@ -44,7 +44,7 @@ Summary guidelines:
 - Use a friendly, conversational tone`;
 
             const completion = await this.openai.chat.completions.create({
-                model: "gpt-3.5-",
+                model: "gpt-4.1-nano",
                 messages: [
                     {
                         role: "system",
