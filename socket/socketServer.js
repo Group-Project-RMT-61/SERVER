@@ -364,6 +364,29 @@ class SocketServer {
     getOnlineUsersCount() {
         return this.connectedUsers.size;
     }
+
+    // Utility method to broadcast room creation
+    broadcastRoomCreated(roomData) {
+        this.io.emit("room_created", {
+            room: roomData,
+            timestamp: new Date(),
+        });
+    }
+
+    // Utility method to broadcast room deletion
+    broadcastRoomDeleted(roomId, roomInfo) {
+        // Notify all users in the room that it's being deleted
+        this.io.to(`room_${roomId}`).emit("room_deleted", {
+            room: roomInfo,
+            timestamp: new Date(),
+        });
+
+        // Also broadcast to all users so they can update their room lists
+        this.io.emit("room_removed", {
+            roomId: roomId,
+            timestamp: new Date(),
+        });
+    }
 }
 
 module.exports = SocketServer;
