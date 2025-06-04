@@ -41,7 +41,10 @@ Summary guidelines:
 - Highlight main topics discussed
 - Mention key participants if relevant
 - Focus on important information and decisions
-- Use a friendly, conversational tone`;
+- Use a friendly, conversational tone
+
+Please follow below format :
+In the "$roomName", participants mainly exchanged greetings like $greetings and $greetings. $someuser talk or ask about $something, and the other replied with $response. The chat was $vibes and mainly speakingabout about $topic. The conversation included participants like $participants, who contributed to the discussion by $contribution. Overall, the chat was friendly and focused on $main_topic.`;
 
             const completion = await this.openai.chat.completions.create({
                 model: "gpt-4.1-nano",
